@@ -1,0 +1,38 @@
+.o_company_1_layout {
+                font-family: Lato;
+                &.o_report_layout_boxed {
+                    #total strong {
+                        color: black;
+                    }
+                    #informations strong {
+                        color: black;
+                    }
+                    h2 span {
+                        color: black;
+                    }
+                    table {
+                        thead {
+                            tr th {
+                                color: black;
+                            }
+                        }
+                        tbody tr td {
+                            &.o_line_section td {
+                                    background-color: rgba(black, 0.7);
+                                }
+                            &.is-subtotal,
+                                td.o_price_total {
+                                    background-color: rgba(black, 0.1);
+                                }
+                        }
+                    }
+                }
+                .row > div > table,
+                div#total table {
+                    tr {
+                        &.o_total td {
+                            background-color: rgba(black, 0.9);
+                        }
+                    }
+                }
+            }
