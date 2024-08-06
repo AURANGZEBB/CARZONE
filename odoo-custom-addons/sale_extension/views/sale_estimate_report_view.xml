@@ -1,0 +1,1549 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Repair Estimate -->
+    <record id="action_sale_estimate_report" model="ir.actions.report">
+        <field name="name">Estimate</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sale_extension.sale_estimate_report</field>
+        <field name="report_file">sale_extension.sale_estimate_report</field>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="sale_estimate_report">
+       <t t-foreach="docs" t-as="o">
+         <t t-call="job_card_extension.external_layout">
+             <t t-call="web.html_container">
+               <div class="page">
+                   <style>
+                       .borderless td, .borderless th {
+                            border: none;
+                        }
+                       .title {
+                            border-top: 2px solid black;
+                            border-bottom: 2px solid black;
+                       }
+
+                   </style>
+                   <div>
+                       <table class="title" cellpadding="2">
+                           <tr>
+                               <td width="15%" class="text-left">
+                                   Estimate no.: <span t-field="o.name"/>
+                               </td>
+                               <td class="text-center" width="50%" style="font-size: 20px;">
+                                   <b>Estimate</b>
+                               </td>
+                               <td width="18%" class="text-right">
+                                  Date: <span t-field="o.date_order" t-options='{"format": "dd/MM/yyyy hh:mm:ss"}'/>
+                               </td>
+                           </tr>
+                       </table>
+                   </div>
+                   <div class="row" style="margin-top: 1rem;">
+                       <div class="col-6" style="margin-left: 1rem;">
+                           <table style="width: 100%;color: #212529; margin-top: 1rem;margin-bottom: 1rem;">
+                               <tr t-if="o.insurance_company_id">
+                                   <td style="width: 25px;">
+                                       <b>Insurance Company</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 160px;" class="text-left">
+                                       <span t-if="o.title" t-field="o.title"/>
+                                       <span t-field="o.insurance_company_id"/>
+                                   </td>
+                               </tr>
+
+                               <tr>
+                                   <td style="width: 25px;">
+                                       <b>Customer Name</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 160px;" class="text-left">
+                                       <span t-if="o.title" t-field="o.title"/>
+                                       <span t-field="o.partner_id"/>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;">
+                                       <b>Address</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 150px;">
+                                       <t t-if="o.partner_id.street"><span t-field="o.partner_id.street"/>,
+                                       </t>
+                                       <t t-if="o.partner_id.street2"><span t-field="o.partner_id.street2"/>,
+                                       </t>
+                                       <t t-if="o.partner_id.city"><span t-field="o.partner_id.city"/>,
+                                       </t>
+                                       <t t-if="o.partner_id.state_id"><span t-field="o.partner_id.state_id.name"/>,
+                                       </t>
+                                       <t t-if="o.partner_id.zip">
+                                           <span t-field="o.partner_id.zip"/>
+                                       </t>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;">
+                                       <b>TRN No.</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 150px;">
+                                       <span t-if="not o.insurance_company_id" t-field="o.partner_id.trn_no"/>
+                                       <span t-if="o.insurance_company_id" t-field="o.insurance_company_id.trn_no"/>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;">
+                                       <b>Contact No. 1</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 150px;">
+                                       <span t-field="o.partner_id.phone"/>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;">
+                                       <b>Contact No. 2</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 150px;">
+                                       <span t-field="o.partner_id.mobile"/>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;">
+                                       <b>Email</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 150px;">
+                                        <span t-field="o.partner_id.email"/>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;"><b>Claim No.</b></td>
+                                   <td style="width: 5px;" class="text-left"><b>:</b></td>
+                                   <td style="width: 150px;"><span t-field="o.claim_no"/></td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;"><b>LPO No.</b></td>
+                                   <td style="width: 5px;" class="text-left"><b>:</b></td>
+                                   <td style="width: 150px;"><span t-field="o.lpo_no"/></td>
+                               </tr>
+                           </table>
+                       </div>
+                       <div class="col-6" style="margin-left: 3rem;">
+                           <table style="width: 100%;color: #212529; margin-top: 1rem;margin-bottom: 1rem;">
+                                <tr>
+                                    <td style="width: 40px;" class="text-left"><b>Reg. No.</b></td>
+                                    <td style="width: 7px;" class="text-center"><b>:</b></td>
+                                    <td style="width: 220px;" class="text-left"><b><span t-field="o.registration_no"/></b></td>
+                                </tr>
+                               <tr>
+                                    <td style="width: 40px;" class="text-left"><b>Make/Model</b></td>
+                                    <td style="width: 7px;" class="text-center"><b>:</b></td>
+                                    <td style="width: 150px;" class="text-left"><span t-field="o.vehicle_model"/></td>
+                               </tr>
+                                <tr>
+                                    <td style="width: 40px;" class="text-left">
+                                        <b>VIN No.</b>
+                                    </td>
+                                    <td style="width: 7px;" class="text-center"><b>:</b></td>
+                                    <td style="width: 150px;" class="text-left"><span t-field="o.vin"/></td>
+                                </tr>
+                               <tr>
+                                   <td style="width: 40px;" class="text-left">
+                                       <b>Engine No.</b>
+                                   </td>
+                                   <td style="width: 7px;" class="text-center">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 150px;" class="text-left">
+                                       <span t-field="o.engin_no"/>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;">
+                                       <b>Color / Trim</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 150px;">
+                                       <span t-field="o.vehicle_color"/>
+                                   </td>
+                                </tr>
+                               <tr>
+                                    <td style="width: 40px;" class="text-left"><b>Year</b></td>
+                                    <td style="width: 7px;" class="text-center"><b>:</b></td>
+                                    <td style="width: 150px;" class="text-left"><span t-field="o.year"/></td>
+                                </tr>
+                               <tr>
+                                   <td style="width: 25px;"><b>Policy No.</b></td>
+                                   <td style="width: 5px;" class="text-left"><b>:</b></td>
+                                   <td style="width: 150px;"><span t-field="o.policy_no"/></td>
+                               </tr>
+                            </table>
+                       </div>
+                   </div>
+
+
+                   <!-- Is there a discount on at least one line? -->
+                   <t t-set="total_discount" t-value="0"/>
+                   <t t-set="display_discount" t-value="any(l.discount for l in o.order_line)"/>
+
+                   <!-- Cost Sheet Lines -->
+                   <div style="height: 100%;">
+                       <table style="width: 100%;">
+                           <tr style="border-bottom: 1px solid black;">
+                               <td style="width: 8%" class="text-center">
+                                   <strong>S.No.</strong>
+                               </td>
+                               <td>
+                                   <strong>
+                                       Description
+                                   </strong>
+                               </td>
+                               <td style="width: 8%" class="text-center">
+                                   <strong>QTY</strong>
+                               </td>
+                               <td style="width: 8%" class="text-center">
+                                   <strong>VAT</strong>
+                               </td>
+                               <td style="width: 8%" class="text-center">
+                                   <strong>Rate</strong>
+                               </td>
+                               <td t-if="display_discount" style="width: 8%" class="text-center">
+                                   <strong>Discount</strong>
+                               </td>
+                               <td style="width: 18%" class="text-right">
+                                   <strong>Value AED</strong>
+                               </td>
+                           </tr>
+                       </table>
+                       <t t-value="o.separate_order_lines()" t-set="job_cost_sheet_lines"/>
+                        <t t-foreach="job_cost_sheet_lines" t-as="job_cost_sheet_line">
+                            <t t-set="line_total_amount" t-value="0"/>
+                            <div>
+                                <t t-if="job_cost_sheet_line[0] == 1">
+                                    <b>Parts</b>
+                                    <br/>
+                                </t>
+                                <t t-else="">
+                                    <b>
+                                        <t t-esc="(job_cost_sheet_line[-1][0].cost_type.title()).replace('_', ' ')"/>
+                                    </b>
+                                    <br/>
+                                </t>
+                               <table style="width: 100%;">
+                                    <t t-set="count" t-value="0"/>
+                                   <t t-foreach="job_cost_sheet_line[-1]" t-as="cost_sheet_line">
+                                        <t t-set="total_discount" t-value="cost_sheet_line.discount + total_discount"/>
+                                        <t t-set="line_total_amount" t-value="cost_sheet_line.price_subtotal + line_total_amount"/>
+                                        <tr>
+                                            <t t-set="count" t-value="count + 1"/>
+                                            <td style="width: 8%;" class="text-center">
+                                                <span t-esc="count"/>
+                                            </td>
+                                            <td class="text-left">
+                                                <span t-field="cost_sheet_line.name"/>
+                                            </td>
+                                            <td style="width: 8%" class="text-center">
+                                                <span t-field="cost_sheet_line.product_uom_qty"/>
+                                            </td>
+                                            <td style="width: 8%" class="text-center">
+                                                <span t-esc="', '.join(map(lambda x: (x.description or x.name), cost_sheet_line.tax_id))"/>
+                                            </td>
+                                            <td style="width: 8%" class="text-center">
+                                                <span t-field="cost_sheet_line.price_unit"/>
+                                            </td>
+                                            <td t-if="display_discount" style="width: 8%" class="text-center">
+                                                <span t-field="cost_sheet_line.discount"/>
+                                            </td>
+                                            <td style="width: 18%;" class="text-right">
+                                                <span t-field="cost_sheet_line.price_subtotal"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </table>
+                           </div>
+                            <table style="width: 20%" class="text-right" align="right">
+                            <tr style="border-top: 1px solid black;">
+                                <td><b>Total:</b></td>
+                                <td><t t-esc="line_total_amount"/> AED</td>
+                            </tr>
+                        </table>
+                            <br/>
+                        </t>
+
+                       <br/>
+                   </div>
+
+<!--                    Total Amounts-->
+<!--                   <t t-set="untaxed_amount" t-value="o.tax_totals_json"/>-->
+<!--                   <t t-set="amount_tax" t-value="o.cost_sheet_amount_tax"/>-->
+<!--                   <t t-set="amount_total" t-value="o.cost_sheet_amount_total"/>-->
+<!--                    <div style="height: 230px;">-->
+<!--                        <p></p>-->
+<!--                    </div>-->
+                   <div class="row" style="margin-top: 5%;">
+                       <div class="col-7 text-left">
+                           <p><b>Remarks: </b><br/><br/></p>
+                           <p style="margin-bottom: 0px;">
+                               <b>Total Amount In Words:</b> <span t-field="o.num_word"/>
+                           </p>
+                       </div>
+                       <div class="col-5">
+                           <!-- Tax totals -->
+                           <table width="100%" border="1">
+                               <tr style="border: 1px solid black;">
+                                   <td style="padding-left: 5px;"><b>Amount AED:</b></td>
+<!--                                   <td><t t-esc="o.amount_untaxed"/></td>-->
+                                   <td class="text-right" style="padding-right: 5px;"><t t-esc="o.amount_untaxed"/></td>
+                               </tr>
+                               <tr style="border: 1px solid black;" t-if="display_discount">
+                                   <td style="padding-left: 5px;"><b>Discount:</b></td>
+                                   <td class="text-right" style="padding-right: 5px;"><t t-esc="total_discount"/></td>
+                               </tr>
+                               <tr style="border: 1px solid black;">
+                                   <td style="padding-left: 5px;"><b>5% VAT: </b></td>
+                                   <td class="text-right" style="padding-right: 5px;"><t t-esc="o.amount_tax"/></td>
+                               </tr>
+                               <tr style="border: 1px solid black;">
+                                   <td style="padding-left: 5px;"><b>Net Total AED: </b></td>
+                                   <td class="text-right" style="padding-right: 5px;"><t t-esc="o.amount_total"/></td>
+                               </tr>
+                           </table>
+<!--                            <div>-->
+<!--                                <div id="total" class="row" name="total">-->
+<!--                                    <div>-->
+<!--                                        <table class="table table-sm" width="100%">-->
+<!--                                            &lt;!&ndash; Tax totals &ndash;&gt;-->
+<!--                                            <t t-set="tax_totals" t-value="json.loads(o.tax_totals_json)"/>-->
+<!--                                            <t t-call="account.document_tax_totals"/>-->
+<!--                                        </table>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+                       </div>
+                   </div>
+                   <br/>
+                   <br/>
+                   <div class="row" t-if="o.note">
+                       <div class="col-12" style="text-align: justify;">
+                           <br/>
+                           <span t-esc="o.note"/>
+                       </div>
+                   </div>
+<!--                   <div class="row" style="margin-left: 2px;">-->
+<!--                       <t t-if="o.condition">-->
+<!--                           <span t-field="o.condition"/>-->
+<!--                       </t>-->
+<!--                   </div>-->
+<!--                   <div class="row" style="margin-top: 2%;">-->
+<!--                       <div class="col-6">-->
+<!--                           <table style="width:40%" align="left">-->
+<!--                                <tr>-->
+<!--                                    <td><b>Name:</b></td>-->
+<!--                                    <td>............................................................</td>-->
+<!--                                </tr>-->
+<!--                           </table>-->
+<!--                       </div>-->
+<!--                       <div class="col-6">-->
+<!--                          <table style="width:40%"  align="center">-->
+<!--                            <tr>-->
+<!--                                <td><b>Signature:</b></td>-->
+<!--                                <td>............................................................</td>-->
+<!--                            </tr>-->
+<!--                          </table>-->
+<!--                       </div>-->
+<!--                   </div>-->
+               </div>
+           </t>
+         </t>
+       </t>
+    </template>
+
+    <!-- Repair Estimate CT-->
+    <record id="action_sale_estimate_ct_report" model="ir.actions.report">
+        <field name="name">Estimate CT</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sale_extension.sale_estimate_ct_report</field>
+        <field name="report_file">sale_extension.sale_estimate_ct_report</field>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="sale_estimate_ct_report">
+       <t t-foreach="docs" t-as="o">
+         <t t-call="job_card_extension.external_layout">
+             <t t-call="web.html_container">
+               <div class="page">
+                   <style>
+                       .borderless td, .borderless th {
+                            border: none;
+                        }
+                       .title {
+                            border-top: 2px solid black;
+                            border-bottom: 2px solid black;
+                       }
+
+                   </style>
+                   <div>
+                       <table class="title" cellpadding="2">
+                           <tr>
+                               <td width="15%" class="text-left">
+                                   Estimate no.: <span t-field="o.name"/>
+                               </td>
+                               <td class="text-center" width="50%" style="font-size: 20px;">
+                                   <b>Estimate</b>
+                               </td>
+                               <td width="18%" class="text-right">
+                                  Date: <span t-field="o.date_order" t-options='{"format": "dd/MM/yyyy hh:mm:ss"}'/>
+                               </td>
+                           </tr>
+                       </table>
+                   </div>
+                   <div class="row" style="margin-top: 1rem;">
+                       <div class="col-6" style="margin-left: 1rem;">
+                           <table style="width: 100%;color: #212529; margin-top: 1rem;margin-bottom: 1rem;">
+                               <tr t-if="o.insurance_company_id">
+                                   <td style="width: 25px;">
+                                       <b>Insurance Company</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 160px;" class="text-left">
+                                       <span t-if="o.title" t-field="o.title"/>
+                                       <span t-field="o.insurance_company_id"/>
+                                   </td>
+                               </tr>
+
+                               <tr>
+                                   <td style="width: 25px;">
+                                       <b>Customer Name</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 160px;" class="text-left">
+                                       <span t-if="o.title" t-field="o.title"/>
+                                       <span t-field="o.partner_id"/>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;">
+                                       <b>Address</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 150px;">
+                                       <t t-if="o.partner_id.street"><span t-field="o.partner_id.street"/>,
+                                       </t>
+                                       <t t-if="o.partner_id.street2"><span t-field="o.partner_id.street2"/>,
+                                       </t>
+                                       <t t-if="o.partner_id.city"><span t-field="o.partner_id.city"/>,
+                                       </t>
+                                       <t t-if="o.partner_id.state_id"><span t-field="o.partner_id.state_id.name"/>,
+                                       </t>
+                                       <t t-if="o.partner_id.zip">
+                                           <span t-field="o.partner_id.zip"/>
+                                       </t>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;">
+                                       <b>TRN No.</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 150px;">
+                                       <span t-if="not o.insurance_company_id" t-field="o.partner_id.trn_no"/>
+                                       <span t-if="o.insurance_company_id" t-field="o.insurance_company_id.trn_no"/>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;">
+                                       <b>Contact No. 1</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 150px;">
+                                       <span t-field="o.partner_id.phone"/>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;">
+                                       <b>Contact No. 2</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 150px;">
+                                       <span t-field="o.partner_id.mobile"/>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;">
+                                       <b>Email</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 150px;">
+                                        <span t-field="o.partner_id.email"/>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;"><b>Claim No.</b></td>
+                                   <td style="width: 5px;" class="text-left"><b>:</b></td>
+                                   <td style="width: 150px;"><span t-field="o.claim_no"/></td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;"><b>LPO No.</b></td>
+                                   <td style="width: 5px;" class="text-left"><b>:</b></td>
+                                   <td style="width: 150px;"><span t-field="o.lpo_no"/></td>
+                               </tr>
+                           </table>
+                       </div>
+                       <div class="col-6" style="margin-left: 3rem;">
+                           <table style="width: 100%;color: #212529; margin-top: 1rem;margin-bottom: 1rem;">
+                                <tr>
+                                    <td style="width: 40px;" class="text-left"><b>Reg. No.</b></td>
+                                    <td style="width: 7px;" class="text-center"><b>:</b></td>
+                                    <td style="width: 220px;" class="text-left"><b><span t-field="o.registration_no"/></b></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 40px;" class="text-left"><b>Make/Model</b></td>
+                                    <td style="width: 7px;" class="text-center"><b>:</b></td>
+                                    <td style="width: 150px;" class="text-left"><span t-field="o.vehicle_model"/></td>
+                               </tr>
+                                <tr>
+                                    <td style="width: 40px;" class="text-left">
+                                        <b>VIN No.</b>
+                                    </td>
+                                    <td style="width: 7px;" class="text-center"><b>:</b></td>
+                                    <td style="width: 150px;" class="text-left"><span t-field="o.vin"/></td>
+                                </tr>
+                               <tr>
+                                   <td style="width: 40px;" class="text-left">
+                                       <b>Engine No.</b>
+                                   </td>
+                                   <td style="width: 7px;" class="text-center">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 150px;" class="text-left">
+                                       <span t-field="o.engin_no"/>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;">
+                                       <b>Color / Trim</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 150px;">
+                                       <span t-field="o.vehicle_color"/>
+                                   </td>
+                                </tr>
+                               <tr>
+                                    <td style="width: 40px;" class="text-left"><b>Year</b></td>
+                                    <td style="width: 7px;" class="text-center"><b>:</b></td>
+                                    <td style="width: 150px;" class="text-left"><span t-field="o.year"/></td>
+                                </tr>
+                               <tr>
+                                   <td style="width: 25px;"><b>Policy No.</b></td>
+                                   <td style="width: 5px;" class="text-left"><b>:</b></td>
+                                   <td style="width: 150px;"><span t-field="o.policy_no"/></td>
+                               </tr>
+                            </table>
+                       </div>
+                   </div>
+
+
+                   <!-- Is there a discount on at least one line? -->
+                   <t t-set="total_discount" t-value="0"/>
+                   <t t-set="display_discount" t-value="any(l.discount for l in o.order_line)"/>
+
+                   <!-- Cost Sheet Lines -->
+                   <div style="height: 100%;">
+                       <table style="width: 100%;">
+                           <tr style="border-bottom: 1px solid black;">
+                               <td style="width: 8%" class="text-center">
+                                   <strong>S.No.</strong>
+                               </td>
+                               <td>
+                                   <strong>
+                                       Description
+                                   </strong>
+                               </td>
+                               <td style="width: 8%" class="text-center">
+                                   <strong>QTY</strong>
+                               </td>
+                               <td style="width: 8%" class="text-center">
+<!--                                   <strong>QTY</strong>-->
+                               </td>
+                               <td style="width: 8%" class="text-center">
+<!--                                   <strong>QTY</strong>-->
+                               </td>
+                               <td style="width: 8%" t-if="display_discount" class="text-center">
+<!--                                   <strong>QTY</strong>-->
+                               </td>
+                               <td style="width: 18%" class="text-center">
+                                   <strong>Value AED</strong>
+                               </td>
+                           </tr>
+                       </table>
+                       <t t-value="o.separate_order_lines()" t-set="job_cost_sheet_lines"/>
+                        <t t-foreach="job_cost_sheet_lines" t-as="job_cost_sheet_line">
+                            <t t-set="line_total_amount" t-value="0"/>
+                            <div>
+                                <t t-if="job_cost_sheet_line[0] == 1">
+                                    <b>Parts</b>
+                                    <br/>
+                                </t>
+                                <t t-else="">
+                                    <b>
+                                        <t t-esc="(job_cost_sheet_line[-1][0].cost_type.title()).replace('_', ' ')"/>
+                                    </b>
+                                    <br/>
+                                </t>
+                               <table style="width: 100%;">
+                                    <t t-set="count" t-value="0"/>
+                                   <t t-foreach="job_cost_sheet_line[-1]" t-as="cost_sheet_line">
+                                        <t t-set="total_discount" t-value="cost_sheet_line.discount + total_discount"/>
+                                        <t t-set="line_total_amount" t-value="cost_sheet_line.price_subtotal + line_total_amount"/>
+                                        <tr>
+                                            <t t-set="count" t-value="count + 1"/>
+                                            <td style="width: 8%;" class="text-center">
+                                                <span t-esc="count"/>
+                                            </td>
+                                            <td class="text-left">
+                                                <span t-field="cost_sheet_line.name"/>
+                                            </td>
+                                            <td style="width: 8%" class="text-center">
+                                                <span t-field="cost_sheet_line.product_uom_qty"/>
+                                            </td>
+                                            <td style="width: 8%" class="text-center">
+<!--                                                <span t-esc="', '.join(map(lambda x: (x.description or x.name), cost_sheet_line.tax_id))"/>-->
+                                            </td>
+                                            <td style="width: 8%" class="text-center">
+<!--                                                <span t-field="cost_sheet_line.price_unit"/>-->
+                                            </td>
+                                            <td t-if="display_discount" style="width: 8%" class="text-center">
+<!--                                                <span t-field="cost_sheet_line.discount"/>-->
+                                            </td>
+                                            <td style="width: 18%;" class="text-right">
+<!--                                                <span t-field="cost_sheet_line.price_subtotal"/>-->
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </table>
+                           </div>
+                            <table style="width: 20%" class="text-right" align="right">
+                            <tr style="border-top: 1px solid black;">
+                                <td><b>Total:</b></td>
+                                <td><t t-esc="line_total_amount"/> AED</td>
+                            </tr>
+                        </table>
+                            <br/>
+                        </t>
+
+                       <br/>
+                   </div>
+
+<!--                    Total Amounts-->
+<!--                   <t t-set="untaxed_amount" t-value="o.tax_totals_json"/>-->
+<!--                   <t t-set="amount_tax" t-value="o.cost_sheet_amount_tax"/>-->
+<!--                   <t t-set="amount_total" t-value="o.cost_sheet_amount_total"/>-->
+<!--                    <div style="height: 230px;">-->
+<!--                        <p></p>-->
+<!--                    </div>-->
+                   <div class="row" style="margin-top: 5%;">
+                       <div class="col-7 text-left">
+                           <p><b>Remarks: </b><br/><br/></p>
+                           <p style="margin-bottom: 0px;">
+                               <b>Total Amount In Words:</b> <span t-field="o.num_word"/>
+                           </p>
+                       </div>
+                       <div class="col-5">
+                           <!-- Tax totals -->
+                           <table width="100%" border="1">
+                               <tr style="border: 1px solid black;">
+                                   <td style="padding-left: 5px;"><b>Amount AED:</b></td>
+<!--                                   <td><t t-esc="o.amount_untaxed"/></td>-->
+                                   <td class="text-right" style="padding-right: 5px;"><t t-esc="o.amount_untaxed"/></td>
+                               </tr>
+                               <tr style="border: 1px solid black;" t-if="display_discount">
+                                   <td style="padding-left: 5px;"><b>Discount:</b></td>
+                                   <td class="text-right" style="padding-right: 5px;"><t t-esc="total_discount"/></td>
+                               </tr>
+                               <tr style="border: 1px solid black;">
+                                   <td style="padding-left: 5px;"><b>5% VAT: </b></td>
+                                   <td class="text-right" style="padding-right: 5px;"><t t-esc="o.amount_tax"/></td>
+                               </tr>
+                               <tr style="border: 1px solid black;">
+                                   <td style="padding-left: 5px;"><b>Net Total AED: </b></td>
+                                   <td class="text-right" style="padding-right: 5px;"><t t-esc="o.amount_total"/></td>
+                               </tr>
+                           </table>
+<!--                            <div>-->
+<!--                                <div id="total" class="row" name="total">-->
+<!--                                    <div>-->
+<!--                                        <table class="table table-sm" width="100%">-->
+<!--                                            &lt;!&ndash; Tax totals &ndash;&gt;-->
+<!--                                            <t t-set="tax_totals" t-value="json.loads(o.tax_totals_json)"/>-->
+<!--                                            <t t-call="account.document_tax_totals"/>-->
+<!--                                        </table>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+                       </div>
+                   </div>
+                   <br/>
+                   <br/>
+                   <div class="row" t-if="o.note">
+                       <div class="col-12" style="text-align: justify;">
+                           <br/>
+                           <span t-esc="o.note"/>
+                       </div>
+                   </div>
+<!--                   <div class="row" style="margin-left: 2px;">-->
+<!--                       <t t-if="o.condition">-->
+<!--                           <span t-field="o.condition"/>-->
+<!--                       </t>-->
+<!--                   </div>-->
+<!--                   <div class="row" style="margin-top: 2%;">-->
+<!--                       <div class="col-6">-->
+<!--                           <table style="width:40%" align="left">-->
+<!--                                <tr>-->
+<!--                                    <td><b>Name:</b></td>-->
+<!--                                    <td>............................................................</td>-->
+<!--                                </tr>-->
+<!--                           </table>-->
+<!--                       </div>-->
+<!--                       <div class="col-6">-->
+<!--                          <table style="width:40%"  align="center">-->
+<!--                            <tr>-->
+<!--                                <td><b>Signature:</b></td>-->
+<!--                                <td>............................................................</td>-->
+<!--                            </tr>-->
+<!--                          </table>-->
+<!--                       </div>-->
+<!--                   </div>-->
+               </div>
+           </t>
+         </t>
+       </t>
+    </template>
+
+        <!-- Repair Estimate GT-2-->
+    <record id="action_sale_estimate_gt_2_report" model="ir.actions.report">
+        <field name="name">Estimate GT</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sale_extension.sale_estimate_gt_2_report</field>
+        <field name="report_file">sale_extension.sale_estimate_gt_2_report</field>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="sale_estimate_gt_2_report">
+       <t t-foreach="docs" t-as="o">
+         <t t-call="job_card_extension.external_layout">
+             <t t-call="web.html_container">
+               <div class="page">
+                   <style>
+                       .borderless td, .borderless th {
+                            border: none;
+                        }
+                       .title {
+                            border-top: 2px solid black;
+                            border-bottom: 2px solid black;
+                       }
+
+                   </style>
+                   <div>
+                       <table class="title" cellpadding="2">
+                           <tr>
+                               <td width="15%" class="text-left">
+                                   Estimate no.: <span t-field="o.name"/>
+                               </td>
+                               <td class="text-center" width="50%" style="font-size: 20px;">
+                                   <b>Estimate</b>
+                               </td>
+                               <td width="18%" class="text-right">
+                                  Date: <span t-field="o.date_order" t-options='{"format": "dd/MM/yyyy hh:mm:ss"}'/>
+                               </td>
+                           </tr>
+                       </table>
+                   </div>
+                   <div class="row" style="margin-top: 1rem;">
+                       <div class="col-6" style="margin-left: 1rem;">
+                           <table style="width: 100%;color: #212529; margin-top: 1rem;margin-bottom: 1rem;">
+                               <tr t-if="o.insurance_company_id">
+                                   <td style="width: 25px;">
+                                       <b>Insurance Company</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 160px;" class="text-left">
+                                       <span t-if="o.title" t-field="o.title"/>
+                                       <span t-field="o.insurance_company_id"/>
+                                   </td>
+                               </tr>
+
+                               <tr>
+                                   <td style="width: 25px;">
+                                       <b>Customer Name</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 160px;" class="text-left">
+                                       <span t-if="o.title" t-field="o.title"/>
+                                       <span t-field="o.partner_id"/>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;">
+                                       <b>Address</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 150px;">
+                                       <t t-if="o.partner_id.street"><span t-field="o.partner_id.street"/>,
+                                       </t>
+                                       <t t-if="o.partner_id.street2"><span t-field="o.partner_id.street2"/>,
+                                       </t>
+                                       <t t-if="o.partner_id.city"><span t-field="o.partner_id.city"/>,
+                                       </t>
+                                       <t t-if="o.partner_id.state_id"><span t-field="o.partner_id.state_id.name"/>,
+                                       </t>
+                                       <t t-if="o.partner_id.zip">
+                                           <span t-field="o.partner_id.zip"/>
+                                       </t>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;">
+                                       <b>TRN No.</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 150px;">
+                                       <span t-if="not o.insurance_company_id" t-field="o.partner_id.trn_no"/>
+                                       <span t-if="o.insurance_company_id" t-field="o.insurance_company_id.trn_no"/>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;">
+                                       <b>Contact No. 1</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 150px;">
+                                       <span t-field="o.partner_id.phone"/>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;">
+                                       <b>Contact No. 2</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 150px;">
+                                       <span t-field="o.partner_id.mobile"/>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;">
+                                       <b>Email</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 150px;">
+                                        <span t-field="o.partner_id.email"/>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;"><b>Claim No.</b></td>
+                                   <td style="width: 5px;" class="text-left"><b>:</b></td>
+                                   <td style="width: 150px;"><span t-field="o.claim_no"/></td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;"><b>LPO No.</b></td>
+                                   <td style="width: 5px;" class="text-left"><b>:</b></td>
+                                   <td style="width: 150px;"><span t-field="o.lpo_no"/></td>
+                               </tr>
+                           </table>
+                       </div>
+                       <div class="col-6" style="margin-left: 3rem;">
+                           <table style="width: 100%;color: #212529; margin-top: 1rem;margin-bottom: 1rem;">
+                                <tr>
+                                    <td style="width: 40px;" class="text-left"><b>Reg. No.</b></td>
+                                    <td style="width: 7px;" class="text-center"><b>:</b></td>
+                                    <td style="width: 220px;" class="text-left"><b><span t-field="o.registration_no"/></b></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 40px;" class="text-left"><b>Make/Model</b></td>
+                                    <td style="width: 7px;" class="text-center"><b>:</b></td>
+                                    <td style="width: 150px;" class="text-left"><span t-field="o.vehicle_model"/></td>
+                               </tr>
+                                <tr>
+                                    <td style="width: 40px;" class="text-left">
+                                        <b>VIN No.</b>
+                                    </td>
+                                    <td style="width: 7px;" class="text-center"><b>:</b></td>
+                                    <td style="width: 150px;" class="text-left"><span t-field="o.vin"/></td>
+                                </tr>
+                               <tr>
+                                   <td style="width: 40px;" class="text-left">
+                                       <b>Engine No.</b>
+                                   </td>
+                                   <td style="width: 7px;" class="text-center">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 150px;" class="text-left">
+                                       <span t-field="o.engin_no"/>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;">
+                                       <b>Color / Trim</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 150px;">
+                                       <span t-field="o.vehicle_color"/>
+                                   </td>
+                                </tr>
+                               <tr>
+                                    <td style="width: 40px;" class="text-left"><b>Year</b></td>
+                                    <td style="width: 7px;" class="text-center"><b>:</b></td>
+                                    <td style="width: 150px;" class="text-left"><span t-field="o.year"/></td>
+                                </tr>
+                               <tr>
+                                   <td style="width: 25px;"><b>Policy No.</b></td>
+                                   <td style="width: 5px;" class="text-left"><b>:</b></td>
+                                   <td style="width: 150px;"><span t-field="o.policy_no"/></td>
+                               </tr>
+                            </table>
+                       </div>
+                   </div>
+
+
+                   <!-- Is there a discount on at least one line? -->
+                   <t t-set="total_discount" t-value="0"/>
+                   <t t-set="display_discount" t-value="any(l.discount for l in o.order_line)"/>
+
+                   <!-- Cost Sheet Lines -->
+                   <div style="height: 100%;">
+                       <table style="width: 100%;">
+                           <tr style="border-bottom: 1px solid black;">
+                               <td style="width: 8%" class="text-center">
+                                   <strong>S.No.</strong>
+                               </td>
+                               <td>
+                                   <strong>
+                                       Description
+                                   </strong>
+                               </td>
+                               <td style="width: 8%" class="text-center">
+                                   <strong>QTY</strong>
+                               </td>
+                                                              <td style="width: 8%" class="text-center">
+<!--                                   <strong>QTY</strong>-->
+                               </td>
+                               <td style="width: 8%" class="text-center">
+<!--                                   <strong>QTY</strong>-->
+                               </td>
+                               <td style="width: 8%" t-if="display_discount" class="text-center">
+<!--                                   <strong>QTY</strong>-->
+                               </td>
+                               <td style="width: 18%" class="text-center">
+                                   <strong>Value AED</strong>
+                               </td>
+                           </tr>
+                       </table>
+                       <t t-set="total_count" t-value="0"/>
+                       <t t-value="o.separate_order_lines()" t-set="job_cost_sheet_lines"/>
+                        <t t-foreach="job_cost_sheet_lines" t-as="job_cost_sheet_line">
+                            <t t-set="line_total_amount" t-value="0"/>
+                            <div>
+                                <t t-if="job_cost_sheet_line[0] == 1">
+                                    <b>Parts</b>
+                                    <br/>
+                                </t>
+                                <t t-else="">
+                                    <b>
+                                        <t t-esc="(job_cost_sheet_line[-1][0].cost_type.title()).replace('_', ' ')"/>
+                                    </b>
+                                    <br/>
+                                </t>
+                               <table style="width: 100%;">
+                                    <t t-set="count" t-value="0"/>
+                                   <t t-foreach="job_cost_sheet_line[-1]" t-as="cost_sheet_line">
+                                        <t t-set="total_discount" t-value="cost_sheet_line.discount + total_discount"/>
+                                        <t t-set="line_total_amount" t-value="cost_sheet_line.price_subtotal + line_total_amount"/>
+                                        <tr>
+                                            <t t-set="count" t-value="count + 1"/>
+                                            <t t-set="total_count" t-value="count"/>
+                                            <td style="width: 8%;" class="text-center">
+                                                <span t-esc="count"/>
+                                            </td>
+                                            <td class="text-left">
+                                                <span t-field="cost_sheet_line.name"/>
+                                            </td>
+                                            <td style="width: 8%" class="text-center">
+                                                <span t-field="cost_sheet_line.product_uom_qty"/>
+                                            </td>
+                                            <td style="width: 8%" class="text-center">
+<!--                                                <span t-esc="', '.join(map(lambda x: (x.description or x.name), cost_sheet_line.tax_id))"/>-->
+                                            </td>
+                                            <td style="width: 8%" class="text-center">
+<!--                                                <span t-field="cost_sheet_line.price_unit"/>-->
+                                            </td>
+                                            <td t-if="display_discount" style="width: 8%" class="text-center">
+<!--                                                <span t-field="cost_sheet_line.discount"/>-->
+                                            </td>
+                                            <td style="width: 18%;" class="text-right">
+<!--                                                <span t-field="cost_sheet_line.price_subtotal"/>-->
+                                            </td>
+                                        </tr>
+                                    </t>
+
+                                </table>
+                           </div>
+<!--                            <table style="width: 20%" class="text-right" align="right">-->
+<!--                            <tr style="border-top: 1px solid black;">-->
+<!--                                <td><b>Total:</b></td>-->
+<!--                                <td><t t-esc="line_total_amount"/> AED</td>-->
+<!--                            </tr>-->
+<!--                        </table>-->
+                            <br/>
+                        </t>
+                       <div>
+                        <table width="100%">
+                           <tr>
+                                       <td style="width: 8%;" class="text-center">
+                                           <t t-set="total_count" t-value="total_count + 1"/>
+                                            <span t-esc="total_count"/>
+                                        </td>
+                                       <td class="text-left">
+                                            <span>LUMPSUM</span>
+                                        </td>
+                                        <td style="width: 28%; padding-left:16%;" class="text-right">
+                                                <span t-field="o.amount_untaxed"/>
+                                        </td>
+                                   </tr>
+                       </table>
+                       </div>
+
+                       <br/>
+                   </div>
+
+<!--                    Total Amounts-->
+<!--                   <t t-set="untaxed_amount" t-value="o.tax_totals_json"/>-->
+<!--                   <t t-set="amount_tax" t-value="o.cost_sheet_amount_tax"/>-->
+<!--                   <t t-set="amount_total" t-value="o.cost_sheet_amount_total"/>-->
+<!--                    <div style="height: 230px;">-->
+<!--                        <p></p>-->
+<!--                    </div>-->
+                   <div class="row" style="margin-top: 5%;">
+                       <div class="col-7 text-left">
+                           <p><b>Remarks: </b><br/><br/></p>
+                           <p style="margin-bottom: 0px;">
+                               <b>Total Amount In Words:</b> <span t-field="o.num_word"/>
+                           </p>
+                       </div>
+                       <div class="col-5">
+                           <!-- Tax totals -->
+                           <table width="100%" border="1">
+                               <tr style="border: 1px solid black;">
+                                   <td style="padding-left: 5px;"><b>Amount AED:</b></td>
+<!--                                   <td><t t-esc="o.amount_untaxed"/></td>-->
+                                   <td class="text-right" style="padding-right: 5px;"><t t-esc="o.amount_untaxed"/></td>
+                               </tr>
+                               <tr style="border: 1px solid black;" t-if="display_discount">
+                                   <td style="padding-left: 5px;"><b>Discount:</b></td>
+                                   <td class="text-right" style="padding-right: 5px;"><t t-esc="total_discount"/></td>
+                               </tr>
+                               <tr style="border: 1px solid black;">
+                                   <td style="padding-left: 5px;"><b>5% VAT: </b></td>
+                                   <td class="text-right" style="padding-right: 5px;"><t t-esc="o.amount_tax"/></td>
+                               </tr>
+                               <tr style="border: 1px solid black;">
+                                   <td style="padding-left: 5px;"><b>Net Total AED: </b></td>
+                                   <td class="text-right" style="padding-right: 5px;"><t t-esc="o.amount_total"/></td>
+                               </tr>
+                           </table>
+<!--                            <div>-->
+<!--                                <div id="total" class="row" name="total">-->
+<!--                                    <div>-->
+<!--                                        <table class="table table-sm" width="100%">-->
+<!--                                            &lt;!&ndash; Tax totals &ndash;&gt;-->
+<!--                                            <t t-set="tax_totals" t-value="json.loads(o.tax_totals_json)"/>-->
+<!--                                            <t t-call="account.document_tax_totals"/>-->
+<!--                                        </table>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+                       </div>
+                   </div>
+                   <br/>
+                   <br/>
+                   <div class="row" t-if="o.note">
+                       <div class="col-12" style="text-align: justify;">
+                           <br/>
+                           <span t-esc="o.note"/>
+                       </div>
+                   </div>
+<!--                   <div class="row" style="margin-left: 2px;">-->
+<!--                       <t t-if="o.condition">-->
+<!--                           <span t-field="o.condition"/>-->
+<!--                       </t>-->
+<!--                   </div>-->
+<!--                   <div class="row" style="margin-top: 2%;">-->
+<!--                       <div class="col-6">-->
+<!--                           <table style="width:40%" align="left">-->
+<!--                                <tr>-->
+<!--                                    <td><b>Name:</b></td>-->
+<!--                                    <td>............................................................</td>-->
+<!--                                </tr>-->
+<!--                           </table>-->
+<!--                       </div>-->
+<!--                       <div class="col-6">-->
+<!--                          <table style="width:40%"  align="center">-->
+<!--                            <tr>-->
+<!--                                <td><b>Signature:</b></td>-->
+<!--                                <td>............................................................</td>-->
+<!--                            </tr>-->
+<!--                          </table>-->
+<!--                       </div>-->
+<!--                   </div>-->
+               </div>
+           </t>
+         </t>
+       </t>
+    </template>
+
+    <template id="custom_document_tax_totals" inherit_id="account.document_tax_totals">
+        <xpath expr="//tr[hasclass('o_total')]" position="replace">
+            <tr class="border-black">
+                <td><strong>Total</strong></td>
+                <td class="text-right">
+                    <span t-esc="tax_totals['formatted_amount_total']"/>
+                </td>
+            </tr>
+        </xpath>
+        </template>
+
+        <!-- Supplementary Estimate -->
+    <record id="action_sale_supplementary_estimate_report" model="ir.actions.report">
+        <field name="name">Supplementary Estimate</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sale_extension.sale_supplementary_estimate_report</field>
+        <field name="report_file">sale_extension.sale_supplementary_estimate_report</field>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="sale_supplementary_estimate_report">
+       <t t-foreach="docs" t-as="o">
+         <t t-call="job_card_extension.external_layout">
+             <t t-call="web.html_container">
+               <div class="page">
+                   <style>
+                       .borderless td, .borderless th {
+                            border: none;
+                        }
+                       .title {
+                            border-top: 2px solid black;
+                            border-bottom: 2px solid black;
+                       }
+
+                   </style>
+                   <div>
+                       <table class="title" cellpadding="2">
+                           <tr>
+                               <td width="15%" class="text-left">
+                                   Estimate no.: <span t-field="o.name"/>
+                               </td>
+                               <td class="text-center" width="50%" style="font-size: 20px;">
+                                   <b>Estimate</b>
+                               </td>
+                               <td width="18%" class="text-right">
+                                  Date: <span t-field="o.date_order" t-options='{"format": "dd/MM/yyyy hh:mm:ss"}'/>
+                               </td>
+                           </tr>
+                       </table>
+                   </div>
+                   <div class="row" style="margin-top: 1rem;">
+                       <div class="col-6" style="margin-left: 1rem;">
+                           <table style="width: 100%;color: #212529; margin-top: 1rem;margin-bottom: 1rem;">
+                               <tr t-if="o.insurance_company_id">
+                                   <td style="width: 25px;">
+                                       <b>Insurance Company</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 160px;" class="text-left">
+                                       <span t-if="o.title" t-field="o.title"/>
+                                       <span t-field="o.insurance_company_id"/>
+                                   </td>
+                               </tr>
+
+                               <tr>
+                                   <td style="width: 25px;">
+                                       <b>Customer Name</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 160px;" class="text-left">
+                                       <span t-if="o.title" t-field="o.title"/>
+                                       <span t-field="o.partner_id"/>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;">
+                                       <b>Address</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 150px;">
+                                       <t t-if="o.partner_id.street"><span t-field="o.partner_id.street"/>,
+                                       </t>
+                                       <t t-if="o.partner_id.street2"><span t-field="o.partner_id.street2"/>,
+                                       </t>
+                                       <t t-if="o.partner_id.city"><span t-field="o.partner_id.city"/>,
+                                       </t>
+                                       <t t-if="o.partner_id.state_id"><span t-field="o.partner_id.state_id.name"/>,
+                                       </t>
+                                       <t t-if="o.partner_id.zip">
+                                           <span t-field="o.partner_id.zip"/>
+                                       </t>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;">
+                                       <b>TRN No.</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 150px;">
+                                       <span t-if="not o.insurance_company_id" t-field="o.partner_id.trn_no"/>
+                                       <span t-if="o.insurance_company_id" t-field="o.insurance_company_id.trn_no"/>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;">
+                                       <b>Contact No. 1</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 150px;">
+                                       <span t-field="o.partner_id.phone"/>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;">
+                                       <b>Contact No. 2</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 150px;">
+                                       <span t-field="o.partner_id.mobile"/>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;">
+                                       <b>Email</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 150px;">
+                                        <span t-field="o.partner_id.email"/>
+                                   </td>
+                               </tr>
+                                <tr>
+                                   <td style="width: 25px;"><b>Claim No.</b></td>
+                                   <td style="width: 5px;" class="text-left"><b>:</b></td>
+                                   <td style="width: 150px;"><span t-field="o.claim_no"/></td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;"><b>LPO No.</b></td>
+                                   <td style="width: 5px;" class="text-left"><b>:</b></td>
+                                   <td style="width: 150px;"><span t-field="o.lpo_no"/></td>
+                               </tr>
+                           </table>
+                       </div>
+                       <div class="col-6" style="margin-left: 3rem;">
+                           <table style="width: 100%;color: #212529; margin-top: 1rem;margin-bottom: 1rem;">
+                                <tr>
+                                    <td style="width: 40px;" class="text-left"><b>Reg. No.</b></td>
+                                    <td style="width: 7px;" class="text-center"><b>:</b></td>
+                                    <td style="width: 220px;" class="text-left"><b><span t-field="o.registration_no"/></b></td>
+                                </tr>
+                               <tr>
+                                    <td style="width: 40px;" class="text-left"><b>Make/Model</b></td>
+                                    <td style="width: 7px;" class="text-center"><b>:</b></td>
+                                    <td style="width: 150px;" class="text-left"><span t-field="o.vehicle_model"/></td>
+                               </tr>
+                                <tr>
+                                    <td style="width: 40px;" class="text-left">
+                                        <b>VIN No.</b>
+                                    </td>
+                                    <td style="width: 7px;" class="text-center"><b>:</b></td>
+                                    <td style="width: 150px;" class="text-left"><span t-field="o.vin"/></td>
+                                </tr>
+                               <tr>
+                                   <td style="width: 40px;" class="text-left">
+                                       <b>Engine No.</b>
+                                   </td>
+                                   <td style="width: 7px;" class="text-center">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 150px;" class="text-left">
+                                       <span t-field="o.engin_no"/>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td style="width: 25px;">
+                                       <b>Color / Trim</b>
+                                   </td>
+                                   <td style="width: 5px;" class="text-left">
+                                       <b>:</b>
+                                   </td>
+                                   <td style="width: 150px;">
+                                       <span t-field="o.vehicle_color"/>
+                                   </td>
+                                </tr>
+                               <tr>
+                                    <td style="width: 40px;" class="text-left"><b>Year</b></td>
+                                    <td style="width: 7px;" class="text-center"><b>:</b></td>
+                                    <td style="width: 150px;" class="text-left"><span t-field="o.year"/></td>
+                                </tr>
+                                 <tr>
+                                   <td style="width: 25px;"><b>Policy No.</b></td>
+                                   <td style="width: 5px;" class="text-left"><b>:</b></td>
+                                   <td style="width: 150px;"><span t-field="o.policy_no"/></td>
+                               </tr>
+                            </table>
+                       </div>
+                   </div>
+
+
+                   <!-- Is there a discount on at least one line? -->
+                   <t t-set="total_discount" t-value="0"/>
+                   <t t-set="display_discount" t-value="any(l.discount for l in o.order_line)"/>
+
+                   <!-- Cost Sheet Lines -->
+                   <div style="height: 100%;">
+                       <table style="width: 100%;">
+                           <tr style="border-bottom: 1px solid black;">
+                               <td style="width: 8%" class="text-center">
+                                   <strong>S.No.</strong>
+                               </td>
+                               <td>
+                                   <strong>
+                                       Description
+                                   </strong>
+                               </td>
+                               <td style="width: 8%" class="text-center">
+                                   <strong>QTY</strong>
+                               </td>
+                               <td style="width: 8%" class="text-center">
+                                   <strong>VAT</strong>
+                               </td>
+                               <td style="width: 8%" class="text-center">
+                                   <strong>Rate</strong>
+                               </td>
+                               <td t-if="display_discount" style="width: 8%" class="text-center">
+                                   <strong>Discount</strong>
+                               </td>
+                               <td style="width: 18%" class="text-right">
+                                   <strong>Value AED</strong>
+                               </td>
+                           </tr>
+                       </table>
+                       <t t-value="o.separate_order_lines()" t-set="job_cost_sheet_lines"/>
+                        <t t-foreach="job_cost_sheet_lines" t-as="job_cost_sheet_line">
+                            <t t-set="line_total_amount" t-value="0"/>
+                            <div>
+                                <t t-if="job_cost_sheet_line[0] == 1">
+                                    <b>Parts</b>
+                                    <br/>
+                                </t>
+                                <t t-else="">
+                                    <b>
+                                        <t t-esc="(job_cost_sheet_line[-1][0].cost_type.title()).replace('_', ' ')"/>
+                                    </b>
+                                    <br/>
+                                </t>
+                               <table style="width: 100%;">
+                                    <t t-set="count" t-value="0"/>
+                                   <t t-foreach="job_cost_sheet_line[-1]" t-as="cost_sheet_line">
+                                        <t t-set="total_discount" t-value="cost_sheet_line.discount + total_discount"/>
+                                        <t t-set="line_total_amount" t-value="cost_sheet_line.price_subtotal + line_total_amount"/>
+                                        <tr>
+                                            <t t-set="count" t-value="count + 1"/>
+                                            <td style="width: 8%;" class="text-center">
+                                                <span t-esc="count"/>
+                                            </td>
+                                            <td class="text-left">
+                                                <span t-field="cost_sheet_line.name"/>
+                                            </td>
+                                            <td style="width: 8%" class="text-center">
+                                                <span t-field="cost_sheet_line.product_uom_qty"/>
+                                            </td>
+                                            <td style="width: 8%" class="text-center">
+                                                <span t-esc="', '.join(map(lambda x: (x.description or x.name), cost_sheet_line.tax_id))"/>
+                                            </td>
+                                            <td style="width: 8%" class="text-center">
+                                                <span t-field="cost_sheet_line.price_unit"/>
+                                            </td>
+                                            <td t-if="display_discount" style="width: 8%" class="text-center">
+                                                <span t-field="cost_sheet_line.discount"/>
+                                            </td>
+                                            <td style="width: 18%;" class="text-right">
+                                                <span t-field="cost_sheet_line.price_subtotal"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </table>
+                           </div>
+                            <table style="width: 20%" class="text-right" align="right">
+                            <tr style="border-top: 1px solid black;">
+                                <td><b>Total:</b></td>
+                                <td><t t-esc="line_total_amount"/> AED</td>
+                            </tr>
+                        </table>
+                            <br/>
+                        </t>
+
+                       <br/>
+                   </div>
+
+<!--                    Total Amounts-->
+<!--                   <t t-set="untaxed_amount" t-value="o.tax_totals_json"/>-->
+<!--                   <t t-set="amount_tax" t-value="o.cost_sheet_amount_tax"/>-->
+<!--                   <t t-set="amount_total" t-value="o.cost_sheet_amount_total"/>-->
+<!--                    <div style="height: 230px;">-->
+<!--                        <p></p>-->
+<!--                    </div>-->
+                   <div class="row" style="margin-top: 5%;">
+                       <div class="col-7 text-left">
+                           <p><b>Remarks: </b><br/><br/></p>
+                           <p style="margin-bottom: 0px;">
+                               <b>Total Amount In Words:</b> <span t-field="o.num_word"/>
+                           </p>
+                       </div>
+                       <div class="col-5">
+                           <!-- Tax totals -->
+                           <table width="100%" border="1">
+                               <tr style="border: 1px solid black;">
+                                   <td style="padding-left: 5px;"><b>Amount AED:</b></td>
+<!--                                   <td><t t-esc="o.amount_untaxed"/></td>-->
+                                   <td class="text-right" style="padding-right: 5px;"><t t-esc="o.amount_untaxed"/></td>
+                               </tr>
+                               <tr style="border: 1px solid black;" t-if="display_discount">
+                                   <td style="padding-left: 5px;"><b>Discount:</b></td>
+                                   <td class="text-right" style="padding-right: 5px;"><t t-esc="total_discount"/></td>
+                               </tr>
+                               <tr style="border: 1px solid black;">
+                                   <td style="padding-left: 5px;"><b>5% VAT: </b></td>
+                                   <td class="text-right" style="padding-right: 5px;"><t t-esc="o.amount_tax"/></td>
+                               </tr>
+                               <tr style="border: 1px solid black;">
+                                   <td style="padding-left: 5px;"><b>Net Total AED: </b></td>
+                                   <td class="text-right" style="padding-right: 5px;"><t t-esc="o.amount_total"/></td>
+                               </tr>
+                           </table>
+<!--                            <div>-->
+<!--                                <div id="total" class="row" name="total">-->
+<!--                                    <div>-->
+<!--                                        <table class="table table-sm" width="100%">-->
+<!--                                            &lt;!&ndash; Tax totals &ndash;&gt;-->
+<!--                                            <t t-set="tax_totals" t-value="json.loads(o.tax_totals_json)"/>-->
+<!--                                            <t t-call="account.document_tax_totals"/>-->
+<!--                                        </table>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+                       </div>
+                   </div>
+                   <br/>
+                   <br/>
+                   <div class="row" t-if="o.note">
+                       <div class="col-12" style="text-align: justify;">
+                           <br/>
+                           <span t-esc="o.note"/>
+                       </div>
+                   </div>
+<!--                   <div class="row" style="margin-left: 2px;">-->
+<!--                       <t t-if="o.condition">-->
+<!--                           <span t-field="o.condition"/>-->
+<!--                       </t>-->
+<!--                   </div>-->
+<!--                   <div class="row" style="margin-top: 2%;">-->
+<!--                       <div class="col-6">-->
+<!--                           <table style="width:40%" align="left">-->
+<!--                                <tr>-->
+<!--                                    <td><b>Name:</b></td>-->
+<!--                                    <td>............................................................</td>-->
+<!--                                </tr>-->
+<!--                           </table>-->
+<!--                       </div>-->
+<!--                       <div class="col-6">-->
+<!--                          <table style="width:40%"  align="center">-->
+<!--                            <tr>-->
+<!--                                <td><b>Signature:</b></td>-->
+<!--                                <td>............................................................</td>-->
+<!--                            </tr>-->
+<!--                          </table>-->
+<!--                       </div>-->
+<!--                   </div>-->
+               </div>
+           </t>
+         </t>
+       </t>
+    </template>
+
+</odoo>
