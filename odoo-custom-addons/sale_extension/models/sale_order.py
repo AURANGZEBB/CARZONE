@@ -6,19 +6,11 @@ from odoo.exceptions import ValidationError
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    @api.model
-    def default_get(self, field_list):
-        result = super(SaleOrder, self).default_get(field_list)
-        project = self.env["project.project"].search([])
-        if project:
-            result["project_id"] = project[0].id
-        return result
-
     title = fields.Selection([('mr', 'Mr.'), ('mrs', 'Mrs.'), ('miss', 'Miss')])
     is_insurance = fields.Boolean(string="Is Insurance Claim")
     insurance_company_id = fields.Many2one('res.partner', string='Insurance Company', auto_join=True, tracking=True,
                                            domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
-    project_id = fields.Many2one('project.project', required=True)
+    project_id = fields.Many2one('project.project', required=True, default=587)
     policy_no = fields.Char("Policy No.")
     lpo_no = fields.Char("LPO No")
     lpo_date = fields.Date("LPO Date")

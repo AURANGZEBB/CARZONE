@@ -13,8 +13,10 @@
     'description': "Sale Extension",
     'depends': ['project', 'base', 'account', 'customization_carzone', 'sale', 'job_card_extension'],
     'data': [
+        'security/ir.model.access.csv',
         'views/sale_order_views.xml',
         'views/sale_estimate_report_view.xml',
+        'wizard/sale_report_views.xml',
     ],
     'demo': [],
     'license': 'AGPL-3',

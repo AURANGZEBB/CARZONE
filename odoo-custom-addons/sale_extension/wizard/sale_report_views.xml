@@ -1,0 +1,53 @@
+<odoo>
+    <data>
+        <record id="invoice_wizard_form" model="ir.ui.view">
+            <field name="name">invoice.wizard.view</field>
+            <field name="model">invoice.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Invoice Report">
+                    <group>
+                        <field name="report_selection"/>
+                        <field name="sales_person_ids" attrs="{'invisible': [('report_selection', '!=', 'sales_person')], 'required': [('report_selection', '=', 'sales_person')]}" widget="many2many_tags"/>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="date_from" attrs="{'invisible': [('report_selection', '!=', 'date_range')], 'required': [('report_selection', '=', 'date_range')]}"/>
+                            <field name="month" attrs="{'invisible': [('report_selection', '!=', 'month')], 'required': [('report_selection', '=', 'month')]}"/>
+                            <field name="job_card" attrs="{'invisible': [('report_selection', '!=', 'job_card')] , 'required': [('report_selection', '=', 'job_card')]}"/>
+                            <field name="spare_parts_total"/>
+                            <field name="consumables_total"/>
+                            <field name="sublet"/>
+                        </group>
+                        <group>
+                            <field name="date_to" attrs="{'invisible': [('report_selection', '!=', 'date_range')] , 'required': [('report_selection', '=', 'date_range')]}"/>
+                            <field name="year" attrs="{'invisible': [('report_selection', '!=', 'month')] , 'required': [('report_selection', '=', 'month')]}"/>
+                            <field name="labour_total"/>
+                            <field name="body_shop"/>
+                            <field name="mechanical"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="action_print_xlsx" type="object" string="XLSX" class="oe_highlight"/>
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    <record id="action_invoice_wizard" model="ir.actions.act_window">
+        <field name="name">Invoice Report</field>
+        <field name="res_model">invoice.wizard</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="invoice_wizard_form"/>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="sale_extension.model_invoice_wizard" />
+        <field name="binding_type">report</field>
+    </record>
+
+
+    <menuitem id="invoice_report" sequence="10"
+      name="Invoice Report" parent="account.menu_finance_reports" action="sale_extension.action_invoice_wizard"/>
+
+    </data>
+</odoo>
